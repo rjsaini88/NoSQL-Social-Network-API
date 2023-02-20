@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User } = require("../../models");
+const { User, Thought } = require("../../models");
 
 //TODO - ROUTE THAT GETS ALL THE USERS, include friends?
 router.get("/", (req, res) => {
@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   User.create(req.body)
     .then((newUser) =>
-      !user
+      !newUser
         ? res.status(404).json({ message: "User was not created!" })
         : res.json(newUser)
     )
@@ -54,17 +54,25 @@ router.put("/:userId", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-//TODO - ROUTE THAT DELETES A SINGLE USER BASED ON USER ID -- check assignment 6
+//TODO - ROUTE THAT DELETES A SINGLE USER BASED ON USER ID
 router.delete("/:userId", (req, res) => {
-  User.findOneAndDelete({ _id: req.params.userId }, (err, user) => {
-    if (user) {
-      res.status(200).json(user);
-      console.log(`Deleted: ${user}`);
-    } else {
-      console.log("Something went wrong");
-      res.status(500).json({ message: "Something went wrong" });
-    }
-  });
+  //   User.findOneAndDelete({ _id: req.params.userId }, (err, user) => {
+  //     if (user) {
+  //       res.status(200).json(user);
+  //       console.log(`Deleted: ${user}`);
+  //     } else {
+  //       console.log("Something went wrong");
+  //       res.status(500).json({ message: "Something went wrong" });
+  //     }
+  //   });
+  User.findOneAndDelete({ _id: req.params.userId })
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: "No user found with that ID" })
+        : Thought.deleteMany({ _id: { $in: user.thoughts } })
+    )
+    .then(() => res.json({ message: "User and associated thoughts deleted!" }))
+    .catch((err) => res.status(500).json(err));
 });
 
 //TODO - ROUTE THAT ADDS A FRIEND TO A USER

@@ -44,7 +44,7 @@ router.get("/:thoughtId", (req, res) => {
 });
 
 //TODO: ROUTE TO UPDATE A THOUGHT
-router.put("/", (req, res) => {
+router.put("/:thoughtId", (req, res) => {
   Thought.findByIdAndUpdate(
     { _id: req.params.thoughtId },
     { $set: req.body },
