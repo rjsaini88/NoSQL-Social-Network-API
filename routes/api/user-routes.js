@@ -22,7 +22,7 @@ router.put('/:userId', (req,res)=> {
 
 })
 
-//TODO - ROUTE THAT DELETES A SINGLE USER BASED ON USER ID
+//TODO - ROUTE THAT DELETES A SINGLE USER BASED ON USER ID -- check assignment 6
 router.delete('/:userId', (req,res)=> {
 
 });
