@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Thought, Reaction } = require("../../models");
+const { Thought, Reaction, User } = require("../../models");
 
 //TODO: ROUTE TO GET ALL THOUGHTS
 router.get("/", (req, res) => {
@@ -15,22 +15,36 @@ router.get("/", (req, res) => {
   //TODO: ROUTE TO CREATE A NEW THOUGHT
   router.post("/", (req, res) => {
     Thought.create(req.body)
-      .then((thoughts) => res.json(thoughts))
+      .then((thought) => {
+        return User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $addToSet: { thoughts: thought._id } },
+          { new: true }
+        );
+      })
+      .then((user) =>
+        !user
+          ? res
+              .status(404)
+              .json({
+                message: "Post created, but found not user with that ID",
+              })
+          : res.json("Create the post")
+      )
       .catch((err) => {
         console.log(err);
         return res.status(500).json(err);
       });
-
-    //   Thought.create(
-    //     {
-    //       thoughtText: req.body.thoughtText,
-    //       username: req.body.username,
-    //     },
-    //     (err, thought) => {
-    //       res.status(200).json(true);
-    //     }
-    //   );
   });
+
+//     Thought.create(req.body)
+//       .then((thoughts) => res.json(thoughts))
+//       .catch((err) => {
+//         console.log(err);
+//         return res.status(500).json(err);
+//       });
+
+//   });
 
 //TODO: ROUTE TO GET SINGLE THOUGHT BASED ON THOUGHT ID
 router.get("/:thoughtId", (req, res) => {
@@ -66,7 +80,7 @@ router.delete("/:thoughtId", (req, res) => {
       console.log(`Deleted: ${thought}`);
     } else {
       console.log("Something went wrong");
-      res.status(500).json({ message: "Something went wrong" });
+      res.status(500).json({ message: "No thought found with this id!" });
     }
   });
 });

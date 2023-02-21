@@ -7,6 +7,8 @@ router.get("/", (req, res) => {
   //     res.status(200).json(user);
   // })
   User.find()
+    .populate("thoughts")
+    .populate("friends")
     .then((user) => res.json(user))
     .catch((err) => res.status(500).json(err));
 });
@@ -100,7 +102,7 @@ router.delete("/:userId/friends/:friendId", (req, res) => {
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json(user)
+        : res.json("Your reaction has been added to the thought")
     )
     .catch((err) => res.status(500).json(err));
 });
