@@ -7,10 +7,6 @@ router.get("/", (req, res) => {
     .then((thoughts) => res.json(thoughts))
     .catch((err) => res.status(500).json(err));
 }),
-  //   Thought.find({}, (err, thoughts) => {
-  //     res.status(200).json(thoughts);
-  //   });
-  // });
 
   //TODO: ROUTE TO CREATE A NEW THOUGHT
   router.post("/", (req, res) => {
@@ -34,15 +30,6 @@ router.get("/", (req, res) => {
         return res.status(500).json(err);
       });
   });
-
-//     Thought.create(req.body)
-//       .then((thoughts) => res.json(thoughts))
-//       .catch((err) => {
-//         console.log(err);
-//         return res.status(500).json(err);
-//       });
-
-//   });
 
 //TODO: ROUTE TO GET SINGLE THOUGHT BASED ON THOUGHT ID
 router.get("/:thoughtId", (req, res) => {
@@ -82,34 +69,6 @@ router.delete("/:thoughtId", (req, res) => {
     }
   });
 });
-
-// .then ((thought)=>
-// !thought ? res.status(404).json({message: "No thought found with this id!"})
-// : )
-// });
-
-//TODO: ROUTE TO ADD REACTION TO A THOUGHT // create reaction first const reaction. create
-// router.post("/:thoughtId/reactions", async (req, res) => {
-//   const reaction = await Reaction.create (req.body)
-//   try{
-//   const reaction = await Reaction.create({})
-
-//   Thought.findOneAndUpdate(
-//     { _id: req.params.thoughtId },
-//     { $addToSet: { reactions: req.body } },
-//     { runValidators: true, new: true }
-//   );
-//   res.status(200).json("reaction added");
-//   }catch(err){console.log(err)
-
-//     return res.status(500).json(err);}
-//     .then((thoughts) =>
-//       !thoughts
-//         ? res.status(404).json({ message: "No thoughts found with this id!" })
-//         : res.json("Reaction successfully added to the thought")
-//     )
-//     .catch((err) => res.status(500).json(err));
-// });
 
 router.post("/:thoughtId/reactions", (req, res) => {
   Thought.findOneAndUpdate(

@@ -3,9 +3,6 @@ const { User, Thought } = require("../../models");
 
 //TODO - ROUTE THAT GETS ALL THE USERS, include friends?
 router.get("/", (req, res) => {
-  // User.find({}, (err, user)=> {
-  //     res.status(200).json(user);
-  // })
   User.find()
     .populate("thoughts")
     .populate("friends")
@@ -22,12 +19,6 @@ router.post("/", (req, res) => {
         : res.json(newUser)
     )
     .catch((err) => res.status(500).json(err));
-
-  // .then((users) => res.json(users))
-  // .catch((err) => {
-  //   console.log(err);
-  //   return res.status(500).json(err);
-  // });
 });
 
 //TODO - ROUTE THAT GETS A SINGLE USER BASED ON USER ID
@@ -58,15 +49,6 @@ router.put("/:userId", (req, res) => {
 
 //TODO - ROUTE THAT DELETES A SINGLE USER BASED ON USER ID
 router.delete("/:userId", (req, res) => {
-  //   User.findOneAndDelete({ _id: req.params.userId }, (err, user) => {
-  //     if (user) {
-  //       res.status(200).json(user);
-  //       console.log(`Deleted: ${user}`);
-  //     } else {
-  //       console.log("Something went wrong");
-  //       res.status(500).json({ message: "Something went wrong" });
-  //     }
-  //   });
   User.findOneAndDelete({ _id: req.params.userId })
     .then((user) =>
       !user
