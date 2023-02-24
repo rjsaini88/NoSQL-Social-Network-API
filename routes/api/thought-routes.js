@@ -24,11 +24,9 @@ router.get("/", (req, res) => {
       })
       .then((user) =>
         !user
-          ? res
-              .status(404)
-              .json({
-                message: "Post created, but found not user with that ID",
-              })
+          ? res.status(404).json({
+              message: "Post created, but found no user with that ID",
+            })
           : res.json("Create the post")
       )
       .catch((err) => {
@@ -90,17 +88,39 @@ router.delete("/:thoughtId", (req, res) => {
 // : )
 // });
 
-//TODO: ROUTE TO ADD REACTION TO A THOUGHT
+//TODO: ROUTE TO ADD REACTION TO A THOUGHT // create reaction first const reaction. create
+// router.post("/:thoughtId/reactions", async (req, res) => {
+//   const reaction = await Reaction.create (req.body)
+//   try{
+//   const reaction = await Reaction.create({})
+
+//   Thought.findOneAndUpdate(
+//     { _id: req.params.thoughtId },
+//     { $addToSet: { reactions: req.body } },
+//     { runValidators: true, new: true }
+//   );
+//   res.status(200).json("reaction added");
+//   }catch(err){console.log(err)
+
+//     return res.status(500).json(err);}
+//     .then((thoughts) =>
+//       !thoughts
+//         ? res.status(404).json({ message: "No thoughts found with this id!" })
+//         : res.json("Reaction successfully added to the thought")
+//     )
+//     .catch((err) => res.status(500).json(err));
+// });
+
 router.post("/:thoughtId/reactions", (req, res) => {
-  Thought.findByIdAndUpdate(
+  Thought.findOneAndUpdate(
     { _id: req.params.thoughtId },
-    { $addToSet: { reaction: req.body } },
+    { $addToSet: { reactions: req.body } },
     { runValidators: true, new: true }
   )
-    .then((thought) =>
-      !thought
-        ? res.status(404).json({ message: "No thought found with this id!" })
-        : res.json(thought)
+    .then((thoughts) =>
+      !thoughts
+        ? res.status(404).json({ message: "No thoughts found with this id!" })
+        : res.json(thoughts)
     )
     .catch((err) => res.status(500).json(err));
 });
@@ -112,10 +132,10 @@ router.delete("/:thoughtId/reactions/:reactionId", (req, res) => {
     { $pull: { reactions: { reactionId: req.params.reactionId } } },
     { runValidators: true, new: true }
   )
-    .then((thought) =>
-      !thought
+    .then((thoughts) =>
+      !thoughts
         ? res.status(404).json({ message: "No thought found with that ID :(" })
-        : res.json(thought)
+        : res.json("Reactions has been removed")
     )
     .catch((err) => res.status(500).json(err));
 });

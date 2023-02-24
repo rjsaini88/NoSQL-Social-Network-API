@@ -77,11 +77,11 @@ router.delete("/:userId", (req, res) => {
     .catch((err) => res.status(500).json(err));
 });
 
-//TODO - ROUTE THAT ADDS A FRIEND TO A USER
-router.put("/:userId/friends/:friendId", (req, res) => {
-  User.findByIdAndUpdate(
+//TODO - ROUTE THAT ADDS A FRIEND TO A USER //
+router.post("/:userId/friends/:friendId", (req, res) => {
+  User.findOneAndUpdate(
     { _id: req.params.userId },
-    { $addToSet: { friends: req.body } },
+    { $addToSet: { friends: req.params.friendId } },
     { runValidators: true, new: true }
   )
     .then((user) =>
@@ -96,13 +96,13 @@ router.put("/:userId/friends/:friendId", (req, res) => {
 router.delete("/:userId/friends/:friendId", (req, res) => {
   User.findOneAndUpdate(
     { _id: req.params.userId },
-    { $pull: { friends: { friendId: req.params.friendId } } },
+    { $pull: { friends: req.params.friendId } },
     { runValidators: true, new: true }
   )
     .then((user) =>
       !user
         ? res.status(404).json({ message: "No user found with that ID :(" })
-        : res.json("Your reaction has been added to the thought")
+        : res.json("This person has been removed from your firend's list")
     )
     .catch((err) => res.status(500).json(err));
 });
